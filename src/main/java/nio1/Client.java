@@ -1,3 +1,5 @@
+package nio1;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -13,11 +15,11 @@ import java.util.Set;
 public class Client {
 
     public static void main(String[] args) throws IOException {
-        InetSocketAddress inetSocketAddress = new InetSocketAddress(InetAddress.getLocalHost(), 9091);
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(InetAddress.getLocalHost(), 9092);
         SocketChannel socketChannel = SocketChannel.open();
         Selector selector = Selector.open();
         socketChannel.configureBlocking(false);
-        socketChannel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ);
+        socketChannel.register(selector,  SelectionKey.OP_READ | SelectionKey.OP_CONNECT);
         socketChannel.connect(inetSocketAddress);
         while (true) {
             while (selector.select() >0) {
@@ -27,6 +29,9 @@ public class Client {
                     SelectionKey selectionKey = iterator.next();
                     iterator.remove();
                     if (selectionKey.isConnectable()) {
+                        SocketChannel channel = (SocketChannel) selectionKey.channel();
+                        channel.finishConnect();
+                        selectionKey.interestOps(SelectionKey.OP_READ);
                         System.out.println("connectd");
                     } else if (selectionKey.isReadable()) {
                         SocketChannel channel = (SocketChannel) selectionKey.channel();
@@ -35,10 +40,10 @@ public class Client {
                         byteBuffer.flip();
                         String receiveData = StandardCharsets.UTF_8.decode(byteBuffer).toString();
                         System.out.println("client" + receiveData);
-                        byteBuffer.clear();
-                        byteBuffer.put("data Received".getBytes());
-                        byteBuffer.flip();
-                        channel.write(byteBuffer);
+                        ByteBuffer byteBuffer1 = ByteBuffer.allocate(60);
+                        byteBuffer1.put("data Received".getBytes());
+                        byteBuffer1.flip();
+                        channel.write(byteBuffer1);
                     }
                 }
             }

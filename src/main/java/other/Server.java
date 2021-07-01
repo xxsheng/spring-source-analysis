@@ -1,3 +1,5 @@
+package other;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -15,8 +17,8 @@ public class Server {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         Selector selector = Selector.open();
 
-        serverSocketChannel.bind(new InetSocketAddress(9091));
         serverSocketChannel.configureBlocking(false);
+        serverSocketChannel.bind(new InetSocketAddress(9091));
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         while (true) {
 
