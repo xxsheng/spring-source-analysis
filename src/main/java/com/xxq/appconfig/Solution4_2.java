@@ -68,7 +68,7 @@ public class Solution4_2 {
                     index1 = newIndex1 + 1; // 往后位移
                 } else {
                     k -= (newIndex2 - index2 + 1); // 去掉的元素个数
-                    index2 = newIndex2 + 1; // 往后位移
+                    index2 = newIndex2 + 1; // 往后位移test
                 }
             }
         }
